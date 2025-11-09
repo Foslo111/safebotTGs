@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Новогодний сейф</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; background: #0e0e0e; color: white; display: flex; flex-direction: column; justify-content: center; height: 100vh; }
+    input { font-size: 22px; padding: 10px; width: 100px; text-align: center; }
+    button { font-size: 22px; padding: 10px 20px; margin-top: 10px; cursor: pointer; }
+    .msg { margin-top: 15px; font-size: 18px; }
+  </style>
+</head>
+<body>
+  <h2>🔐 Открой новогодний сейф!</h2>
+  <p>Введи число от 1 до 999</p>
+  <input type="number" id="num" min="1" max="999">
+  <button id="tryBtn">Попробовать</button>
+  <div class="msg" id="msg"></div>
+  <script>
+    const btn = document.getElementById('tryBtn');
+    const msg = document.getElementById('msg');
+    btn.onclick = async () => {
+      const number = document.getElementById('num').value;
+      const tg = window.Telegram.WebApp;
+      const user = tg?.initDataUnsafe?.user?.id || 0;
+      const res = await fetch("/api/check", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ user, number })
+      });
+      const data = await res.json();
+      msg.innerText = data.message;
+    };
+  </script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</body>
+</html>
